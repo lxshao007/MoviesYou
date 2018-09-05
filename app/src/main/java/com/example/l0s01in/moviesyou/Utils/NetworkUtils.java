@@ -1,5 +1,8 @@
 package com.example.l0s01in.moviesyou.Utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.example.l0s01in.moviesyou.Models.Movie;
@@ -67,5 +70,16 @@ public class NetworkUtils {
         String url = BASE_URL + id + "?api_key=" + API_KEY;
         return parseResponse(getResponse(makeRequest(url)), Movie_TYPE);
     }
+
+    public static boolean checkNetwork(Context context){
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
 
 }

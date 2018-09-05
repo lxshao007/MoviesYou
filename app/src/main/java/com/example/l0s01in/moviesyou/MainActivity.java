@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.l0s01in.moviesyou.Models.Movie;
 import com.example.l0s01in.moviesyou.Utils.NetworkUtils;
@@ -16,7 +17,6 @@ import com.example.l0s01in.moviesyou.Utils.NetworkUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,14 +34,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        if (NetworkUtils.checkNetwork(this) == true) {
+            new LoadPictures(POPULAR).execute();
+        } else {
+            Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
+        }
 
-        new LoadPictures(POPULAR).execute();
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-
-
-
 
     }
 
