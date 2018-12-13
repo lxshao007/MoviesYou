@@ -1,5 +1,7 @@
 package com.example.l0s01in.moviesyou.Utils;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

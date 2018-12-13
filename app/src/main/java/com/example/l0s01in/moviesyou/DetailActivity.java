@@ -29,13 +29,13 @@ public class DetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Movie movie = ModelUtils.toObject(getIntent().getStringExtra("movies"), new TypeToken<Movie>(){});
-        mMovieTitle.setText(movie.title);
+        mMovieTitle.setText(movie.getTitle());
         Picasso.with(getApplicationContext())
                 .load(movie.getImgUrl())
                 .placeholder(R.drawable.place_holder)
                 .into(mMovieImage);
-        mMovieYear.setText(movie.release_date);
-        mMovieRate.setText(movie.vote_average);
-        mMovieBrief.setText(movie.overview);
+        mMovieYear.setText(movie.getRelease_date());
+        mMovieRate.setText(movie.getVote_average());
+        mMovieBrief.setText(movie.getOverview());
     }
 }

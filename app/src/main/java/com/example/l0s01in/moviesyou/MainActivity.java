@@ -1,6 +1,9 @@
 package com.example.l0s01in.moviesyou;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -34,16 +37,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        if (NetworkUtils.checkNetwork(this) == true) {
-            new LoadPictures(POPULAR).execute();
-        } else {
-            Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
+        if (NetworkUtils.checkNetwork(this) == false) {
+            return;
         }
+        MoviesViewModel model = ViewModelProviders.of(this).get(MoviesViewModel.class);
+        model.getMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                ImageListAdapter mAdapter = new ImageListAdapter(movies);
+                mRecyclerView.setAdapter(mAdapter);
+            }
 
+        });
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-
     }
 
     @Override
@@ -56,46 +64,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemClicked = item.getItemId();
         if (itemClicked == R.id.action_popular) {
-            new LoadPictures(POPULAR).execute();
+            MoviesViewModel.updateMovies(POPULAR);
             return true;
         }
         if (itemClicked == R.id.action_top_rated) {
-            new LoadPictures(TOP_RATED).execute();
+            MoviesViewModel.updateMovies(TOP_RATED);
             return true;
+
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private class LoadPictures extends AsyncTask<Void, Void, List<Movie>>{
-
-        final String type;
-        public LoadPictures(String type) {
-            this.type = type;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected List<Movie> doInBackground(Void... voids) {
-            try {
-                return NetworkUtils.getMovies(type);
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> movies) {
-            mProgressBar.setVisibility(View.INVISIBLE);
-            if (movies != null){
-                ImageListAdapter mAdapter = new ImageListAdapter(movies);
-                mRecyclerView.setAdapter(mAdapter);
-            }
-        }
-    }
 }
