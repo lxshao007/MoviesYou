@@ -3,9 +3,9 @@ package com.example.l0s01in.moviesyou;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.os.AsyncTask;
 
-import com.example.l0s01in.moviesyou.Models.Movie;
+import com.example.l0s01in.moviesyou.Models.Review;
+import com.example.l0s01in.moviesyou.Models.Trailer;
 import com.example.l0s01in.moviesyou.Utils.NetworkUtils;
 
 import org.json.JSONException;
@@ -13,26 +13,25 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.List;
 
-public class MoviesViewModel extends ViewModel{
-    private static final String POPULAR = "popular";
-    private static final String TOP_RATED = "top_rated";
+public class DetailActivityViewModel extends ViewModel{
 
-    private static MutableLiveData<List<Movie>> movies;
-    public LiveData<List<Movie>> getMovies(){
-        if (movies == null) {
-            movies = new MutableLiveData<List<Movie>>();
-            loadMovies();
+    private MutableLiveData<List<Trailer>> trailers;
+    private MutableLiveData<List<Review>> reviews;
+
+    public LiveData<List<Trailer>> getTrailes(String id) {
+        if (trailers == null) {
+            trailers = new MutableLiveData<List<Trailer>>();
+            loadTrailers(id);
         }
-        return movies;
+        return trailers;
     }
 
-    private void loadMovies() {
-
+    private void loadTrailers(String id) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    movies.postValue(NetworkUtils.getMovies(POPULAR));
+                    trailers.postValue(NetworkUtils.getTrailers(id));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -43,12 +42,20 @@ public class MoviesViewModel extends ViewModel{
         thread.start();
     }
 
-    public static void updateMovies(String type){
+    public LiveData<List<Review>> getReviews(String id) {
+        if(reviews == null) {
+            reviews = new MutableLiveData<List<Review>>();
+            loadReviews(id);
+        }
+        return reviews;
+    }
+
+    private void loadReviews(String id) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    movies.postValue(NetworkUtils.getMovies(type));
+                    reviews.postValue(NetworkUtils.getReviews(id));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {

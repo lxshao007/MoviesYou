@@ -1,8 +1,8 @@
 package com.example.l0s01in.moviesyou;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -40,18 +39,37 @@ public class MainActivity extends AppCompatActivity {
         if (NetworkUtils.checkNetwork(this) == false) {
             return;
         }
-        MoviesViewModel model = ViewModelProviders.of(this).get(MoviesViewModel.class);
-        model.getMovies().observe(this, new Observer<List<Movie>>() {
+        retriveMovies();
+//        MainActivityViewModel model = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+//        model.getMovies().observe(this, new Observer<List<Movie>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Movie> movies) {
+//                ImageListAdapter mAdapter = new ImageListAdapter(movies);
+//                mRecyclerView.setAdapter(mAdapter);
+//            }
+//
+//        });
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+    }
+
+    private void retriveMovies() {
+        LiveData<List<Movie>> movies = null;
+        try {
+            movies = NetworkUtils.getMovies(POPULAR);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        movies.observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
                 ImageListAdapter mAdapter = new ImageListAdapter(movies);
                 mRecyclerView.setAdapter(mAdapter);
             }
-
         });
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
     }
 
     @Override
@@ -64,13 +82,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemClicked = item.getItemId();
         if (itemClicked == R.id.action_popular) {
-            MoviesViewModel.updateMovies(POPULAR);
+            MainActivityViewModel.updateMovies(POPULAR);
             return true;
         }
         if (itemClicked == R.id.action_top_rated) {
-            MoviesViewModel.updateMovies(TOP_RATED);
+            MainActivityViewModel.updateMovies(TOP_RATED);
             return true;
-
+        }
+        if (itemClicked == R.id.action_favorite) {
+            Toast.makeText(this, "favorite clicked", Toast.LENGTH_SHORT).show();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.example.l0s01in.moviesyou.Models.Movie;
+import com.example.l0s01in.moviesyou.Models.Review;
+import com.example.l0s01in.moviesyou.Models.Trailer;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -29,6 +31,8 @@ public class NetworkUtils {
 
     private static final TypeToken<List<Movie>> Movie_LIST_TYPE = new TypeToken<List<Movie>>(){};
     private static final TypeToken<Movie> Movie_TYPE = new TypeToken<Movie>(){};
+    private static final TypeToken<List<Trailer>> TRAILER_LIST_TYPE = new TypeToken<List<Trailer>>(){};
+    private static final TypeToken<List<Review>> REVIEW_LIST_TYPE = new TypeToken<List<Review>>(){};
 
     final private static String API_KEY = "";
 
@@ -51,7 +55,7 @@ public class NetworkUtils {
         return ModelUtils.toObject(moviesJsonArray.toString(), typeToken);
     }
 
-    public static List<Movie> getMovies(String type) throws IOException, JSONException {
+    public static MutableLiveData<List<Movie>> getMovies(String type) throws IOException, JSONException {
         String url;
         switch (type) {
             case POPULAR:
@@ -64,13 +68,25 @@ public class NetworkUtils {
                 url = BASE_URL + POPULAR + "?api_key=" + API_KEY;
                 break;
         }
-        return parseResponse(getResponse(makeRequest(url)), Movie_LIST_TYPE);
+        MutableLiveData<List<Movie>> movies = new MutableLiveData<List<Movie>>();
+        movies.setValue(parseResponse(getResponse(makeRequest(url)), Movie_LIST_TYPE));
+        return movies;
     }
 
 
     public static Movie getMovie(String id) throws IOException, JSONException {
         String url = BASE_URL + id + "?api_key=" + API_KEY;
         return parseResponse(getResponse(makeRequest(url)), Movie_TYPE);
+    }
+
+    public static List<Trailer> getTrailers(String id) throws IOException, JSONException {
+        String url = BASE_URL + id + "/videos" + "?api_key=" + API_KEY;
+        return parseResponse(getResponse(makeRequest(url)), TRAILER_LIST_TYPE);
+    }
+
+    public static List<Review> getReviews(String id) throws IOException, JSONException {
+        String url = BASE_URL + id + "/reviews" + "?api_key=" + API_KEY;
+        return parseResponse(getResponse(makeRequest(url)), REVIEW_LIST_TYPE);
     }
 
     public static boolean checkNetwork(Context context){
