@@ -30,17 +30,18 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.loading_indicator) ProgressBar mProgressBar;
+    private ImageListAdapter mAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        viewModel.getMovies(POPULAR).observe(this, new Observer<List<Movie>>() {
+        viewModel.loadMovies(POPULAR).observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
-                Log.i("movies_____", movies.toString());
-                ImageListAdapter mAdapter = new ImageListAdapter(movies);
+                mAdapter = new ImageListAdapter(movies);
                 mRecyclerView.setAdapter(mAdapter);
             }
         });
@@ -60,15 +61,29 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemClicked = item.getItemId();
         if (itemClicked == R.id.action_popular) {
-            viewModel.getMovies(POPULAR);
+            Toast.makeText(this, "switch to popular", Toast.LENGTH_SHORT).show();
+            viewModel.loadMovies(POPULAR).observe(this, new Observer<List<Movie>>() {
+                @Override
+                public void onChanged(@Nullable List<Movie> movies) {
+                    mAdapter = new ImageListAdapter(movies);
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+            });
             return true;
         }
         if (itemClicked == R.id.action_top_rated) {
-            viewModel.getMovies(TOP_RATED);
+            Toast.makeText(this, "switch to top rated", Toast.LENGTH_SHORT).show();
+            viewModel.loadMovies(TOP_RATED).observe(this, new Observer<List<Movie>>() {
+                @Override
+                public void onChanged(@Nullable List<Movie> movies) {
+                    mAdapter = new ImageListAdapter(movies);
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+            });
             return true;
         }
         if (itemClicked == R.id.action_favorite) {
-            Toast.makeText(this, "favorite clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "switch to favorite", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
