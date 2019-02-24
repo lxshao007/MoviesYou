@@ -1,5 +1,6 @@
 package com.example.l0s01in.moviesyou;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOP_RATED = "top_rated";
 
     MovieViewModel viewModel;
+    MovieRepository movieRepository;
 
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
     @BindView(R.id.loading_indicator) ProgressBar mProgressBar;
@@ -37,13 +39,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        viewModel.loadMovies(POPULAR).observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                mAdapter = new ImageListAdapter(movies);
-                mRecyclerView.setAdapter(mAdapter);
-            }
+        LiveData<List<Movie>> movies = movieRepository.getMovies(POPULAR);
+        movies.observe(this, movies1 -> {
+            mAdapter = new ImageListAdapter(movies1);
+            mRecyclerView.setAdapter(mAdapter);
         });
 
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 2);
@@ -62,23 +61,19 @@ public class MainActivity extends AppCompatActivity {
         int itemClicked = item.getItemId();
         if (itemClicked == R.id.action_popular) {
             Toast.makeText(this, "switch to popular", Toast.LENGTH_SHORT).show();
-            viewModel.loadMovies(POPULAR).observe(this, new Observer<List<Movie>>() {
-                @Override
-                public void onChanged(@Nullable List<Movie> movies) {
-                    mAdapter = new ImageListAdapter(movies);
-                    mRecyclerView.setAdapter(mAdapter);
-                }
+            LiveData<List<Movie>> movies = movieRepository.getMovies(POPULAR);
+            movies.observe(this, movies1 -> {
+                mAdapter = new ImageListAdapter(movies1);
+                mRecyclerView.setAdapter(mAdapter);
             });
             return true;
         }
         if (itemClicked == R.id.action_top_rated) {
             Toast.makeText(this, "switch to top rated", Toast.LENGTH_SHORT).show();
-            viewModel.loadMovies(TOP_RATED).observe(this, new Observer<List<Movie>>() {
-                @Override
-                public void onChanged(@Nullable List<Movie> movies) {
-                    mAdapter = new ImageListAdapter(movies);
-                    mRecyclerView.setAdapter(mAdapter);
-                }
+            LiveData<List<Movie>> movies = movieRepository.getMovies(TOP_RATED);
+            movies.observe(this, movies1 -> {
+                mAdapter = new ImageListAdapter(movies1);
+                mRecyclerView.setAdapter(mAdapter);
             });
             return true;
         }

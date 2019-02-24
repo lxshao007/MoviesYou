@@ -35,7 +35,6 @@ public class MovieRepository {
             @Override
             public void onResponse(Call<Movies> call, Response<Movies> response) {
              Movies resp = response.body();
-             Log.i("resp____", resp.toString());
              movies.setValue(resp.results);
             }
 
@@ -61,4 +60,6 @@ public class MovieRepository {
         });
         return movie;
     }
+
+
 }
