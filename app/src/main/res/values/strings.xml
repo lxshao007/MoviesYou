@@ -5,4 +5,6 @@
     <string name="top_rated">Top rated</string>
     <string name="reviews">Reviews</string>
     <string name="favorite">Favorite</string>
+    <string name="detail_activity">detail activity</string>
+    <string name="review_activity">review activity</string>
 </resources>

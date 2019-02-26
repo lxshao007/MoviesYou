@@ -13,5 +13,8 @@ public class ReviewActivity extends AppCompatActivity {
         String review = getIntent().getStringExtra("review");
         TextView reviewTextView = findViewById(R.id.review_textview);
         reviewTextView.setText(review);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
 }

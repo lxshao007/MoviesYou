@@ -1,23 +1,16 @@
 package com.example.l0s01in.moviesyou;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.Nullable;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-
-import com.example.l0s01in.moviesyou.Models.Movie;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

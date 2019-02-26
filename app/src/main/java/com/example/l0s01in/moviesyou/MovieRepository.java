@@ -2,7 +2,6 @@ package com.example.l0s01in.moviesyou;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.util.Log;
 
 import com.example.l0s01in.moviesyou.Models.Movie;
 import com.example.l0s01in.moviesyou.Models.Movies;

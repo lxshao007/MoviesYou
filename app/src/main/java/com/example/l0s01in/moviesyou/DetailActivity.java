@@ -1,28 +1,21 @@
 package com.example.l0s01in.moviesyou;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.Nullable;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.l0s01in.moviesyou.Models.Movie;
-import com.example.l0s01in.moviesyou.Models.Review;
-import com.example.l0s01in.moviesyou.Models.Trailer;
 import com.example.l0s01in.moviesyou.Utils.ModelUtils;
-import com.example.l0s01in.moviesyou.Utils.NetworkUtils;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
-import java.util.Observable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +30,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_brief) TextView mMovieBrief;
 
     MovieViewModel movieViewModel;
+    Movie movie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +39,14 @@ public class DetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Movie movie = ModelUtils.toObject(getIntent().getStringExtra("movies"), new TypeToken<Movie>(){});
+        setupUI(movie);
+    }
 
-
+    private void setupUI(Movie movie) {
+        if (movie == null) {
+            Toast.makeText(this, "some thing went wrong here", Toast.LENGTH_LONG);
+            return;
+        }
         mMovieTitle.setText(movie.getTitle());
         Picasso.with(getApplicationContext())
                 .load(movie.getImgUrl())
@@ -57,20 +57,34 @@ public class DetailActivity extends AppCompatActivity {
         mMovieBrief.setText(movie.getOverview());
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         movieViewModel.getTrailers(movie.getId()).observe(this, trailers -> {
-                TrailerListAdapter trailerListAdapter = new TrailerListAdapter(getApplicationContext(), trailers);
-                ListView trailerListView = findViewById(R.id.trialer_list);
-                trailerListView.setAdapter(trailerListAdapter);
-                setListViewHeightBasedOnChildren(trailerListView);
-            });
+            TrailerListAdapter trailerListAdapter = new TrailerListAdapter(getApplicationContext(), trailers);
+            ListView trailerListView = findViewById(R.id.trialer_list);
+            trailerListView.setAdapter(trailerListAdapter);
+            setListViewHeightBasedOnChildren(trailerListView);
+        });
         movieViewModel.getReviews(movie.getId()).observe(this, reviews ->  {
 
-                ReviewListAdapter reviewListAdapter = new ReviewListAdapter(getApplicationContext(), reviews);
-                ListView reviewListView = findViewById(R.id.review_list);
-                reviewListView.setAdapter(reviewListAdapter);
-                setListViewHeightBasedOnChildren(reviewListView);
+            ReviewListAdapter reviewListAdapter = new ReviewListAdapter(getApplicationContext(), reviews);
+            ListView reviewListView = findViewById(R.id.review_list);
+            reviewListView.setAdapter(reviewListAdapter);
+            setListViewHeightBasedOnChildren(reviewListView);
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
+        editor.putString("movies", ModelUtils.toString(movie, new TypeToken<Movie>(){}));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
+        movie = ModelUtils.toObject(settings.getString("movies", ""), new TypeToken<Movie>(){});
+        setupUI(movie);
+    }
 
     /**** Method for Setting the Height of the ListView dynamically.
      **** Hack to fix the issue of not showing all the items of the ListView
