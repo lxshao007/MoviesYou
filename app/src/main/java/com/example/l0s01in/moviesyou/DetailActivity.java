@@ -36,6 +36,8 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_rate) TextView mMovieRate;
     @BindView(R.id.movie_brief) TextView mMovieBrief;
 
+    MovieViewModel movieViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,8 @@ public class DetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Movie movie = ModelUtils.toObject(getIntent().getStringExtra("movies"), new TypeToken<Movie>(){});
+
+
         mMovieTitle.setText(movie.getTitle());
         Picasso.with(getApplicationContext())
                 .load(movie.getImgUrl())
@@ -51,24 +55,19 @@ public class DetailActivity extends AppCompatActivity {
         mMovieYear.setText(movie.getRelease_date());
         mMovieRate.setText(movie.getVote_average());
         mMovieBrief.setText(movie.getOverview());
-        DetailActivityViewModel model = ViewModelProviders.of(this).get(DetailActivityViewModel.class);
-        model.getTrailes(movie.getId()).observe(this, new Observer<List<Trailer>>(){
-            @Override
-            public void onChanged(@Nullable List<Trailer> trailers) {
+        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        movieViewModel.getTrailers(movie.getId()).observe(this, trailers -> {
                 TrailerListAdapter trailerListAdapter = new TrailerListAdapter(getApplicationContext(), trailers);
                 ListView trailerListView = findViewById(R.id.trialer_list);
                 trailerListView.setAdapter(trailerListAdapter);
                 setListViewHeightBasedOnChildren(trailerListView);
-            }
-        });
-        model.getReviews(movie.getId()).observe(this, new Observer<List<Review>>() {
-            @Override
-            public void onChanged(@Nullable List<Review> reviews) {
+            });
+        movieViewModel.getReviews(movie.getId()).observe(this, reviews ->  {
+
                 ReviewListAdapter reviewListAdapter = new ReviewListAdapter(getApplicationContext(), reviews);
                 ListView reviewListView = findViewById(R.id.review_list);
                 reviewListView.setAdapter(reviewListAdapter);
                 setListViewHeightBasedOnChildren(reviewListView);
-            }
         });
     }
 

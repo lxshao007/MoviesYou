@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
 
-    MovieViewModel viewModel;
+    MovieViewModel movieViewModel;
     MovieRepository movieRepository;
 
     @BindView(R.id.recycler_view) RecyclerView mRecyclerView;
@@ -39,12 +39,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        LiveData<List<Movie>> movies = movieRepository.getMovies(POPULAR);
-        movies.observe(this, movies1 -> {
-            mAdapter = new ImageListAdapter(movies1);
+
+        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        movieViewModel.getMovies(POPULAR).observe(this, movies -> {
+            mAdapter = new ImageListAdapter(movies);
             mRecyclerView.setAdapter(mAdapter);
         });
-
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -61,18 +61,16 @@ public class MainActivity extends AppCompatActivity {
         int itemClicked = item.getItemId();
         if (itemClicked == R.id.action_popular) {
             Toast.makeText(this, "switch to popular", Toast.LENGTH_SHORT).show();
-            LiveData<List<Movie>> movies = movieRepository.getMovies(POPULAR);
-            movies.observe(this, movies1 -> {
-                mAdapter = new ImageListAdapter(movies1);
+            movieViewModel.getMovies(POPULAR).observe(this, movies -> {
+                mAdapter = new ImageListAdapter(movies);
                 mRecyclerView.setAdapter(mAdapter);
             });
             return true;
         }
         if (itemClicked == R.id.action_top_rated) {
             Toast.makeText(this, "switch to top rated", Toast.LENGTH_SHORT).show();
-            LiveData<List<Movie>> movies = movieRepository.getMovies(TOP_RATED);
-            movies.observe(this, movies1 -> {
-                mAdapter = new ImageListAdapter(movies1);
+            movieViewModel.getMovies(TOP_RATED).observe(this, movies -> {
+                mAdapter = new ImageListAdapter(movies);
                 mRecyclerView.setAdapter(mAdapter);
             });
             return true;

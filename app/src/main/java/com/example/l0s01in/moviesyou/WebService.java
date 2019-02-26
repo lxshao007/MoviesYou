@@ -3,10 +3,8 @@ package com.example.l0s01in.moviesyou;
 
 import com.example.l0s01in.moviesyou.Models.Movie;
 import com.example.l0s01in.moviesyou.Models.Movies;
-import com.example.l0s01in.moviesyou.Models.Review;
-import com.example.l0s01in.moviesyou.Models.Trailer;
-
-import java.util.List;
+import com.example.l0s01in.moviesyou.Models.Reviews;
+import com.example.l0s01in.moviesyou.Models.Trailers;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -21,9 +19,9 @@ public interface WebService {
     Call<Movie> getMovie(@Path("id") String id);
 
     @GET("{id}/videos?api_key=")
-    Call<Trailer> getTrailers(@Path("id") String id);
+    Call<Trailers> getTrailers(@Path("id") String id);
 
     @GET("{id}/reviews?api_key=")
-    Call<Review> getReviews(@Path("id") String id);
+    Call<Reviews> getReviews(@Path("id") String id);
 
 }
