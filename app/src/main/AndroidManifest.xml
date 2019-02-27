@@ -22,6 +22,7 @@
         <activity
             android:name=".DetailActivity"
             android:label="@string/detail_activity"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".ReviewActivity"
             android:label="@string/review_activity"

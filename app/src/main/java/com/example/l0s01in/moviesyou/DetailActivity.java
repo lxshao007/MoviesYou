@@ -76,6 +76,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onPause();
         SharedPreferences.Editor editor = getSharedPreferences("settings", MODE_PRIVATE).edit();
         editor.putString("movies", ModelUtils.toString(movie, new TypeToken<Movie>(){}));
+        editor.apply();
     }
 
     @Override
