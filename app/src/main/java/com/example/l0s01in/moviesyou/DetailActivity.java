@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.l0s01in.moviesyou.Models.Movie;
 import com.example.l0s01in.moviesyou.Utils.ModelUtils;
+import com.example.l0s01in.moviesyou.database.MovieDatabase;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
@@ -29,8 +30,9 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_rate) TextView mMovieRate;
     @BindView(R.id.movie_brief) TextView mMovieBrief;
 
-    MovieViewModel movieViewModel;
-    Movie movie;
+    private MovieViewModel movieViewModel;
+    private Movie movie;
+    private MovieDatabase mDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,8 @@ public class DetailActivity extends AppCompatActivity {
 
         Movie movie = ModelUtils.toObject(getIntent().getStringExtra("movies"), new TypeToken<Movie>(){});
         setupUI(movie);
+
+        mDB = MovieDatabase.getInstance(getApplicationContext());
     }
 
     private void setupUI(Movie movie) {
@@ -86,6 +90,11 @@ public class DetailActivity extends AppCompatActivity {
         movie = ModelUtils.toObject(settings.getString("movies", ""), new TypeToken<Movie>(){});
         setupUI(movie);
     }
+
+    public void onSavedButtonClick() {
+
+    }
+
 
     /**** Method for Setting the Height of the ListView dynamically.
      **** Hack to fix the issue of not showing all the items of the ListView

@@ -15,23 +15,23 @@
             android:textSize="36sp"
             android:textColor="#fff"
             android:background="@color/colorAccent"/>
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:orientation="horizontal">
             <ImageView
                 android:id="@+id/movie_image"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"/>
+                android:layout_height="wrap_content" />
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginLeft="18dp"
                 android:layout_alignParentRight="true"
-                android:layout_toRightOf="@+id/movie_image">
+                android:layout_weight="1">
                 <TextView
                     android:id="@+id/movie_year"
                     android:layout_width="match_parent"
@@ -44,8 +44,12 @@
                     android:id="@+id/movie_rate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    im/>
             </LinearLayout>
-        </RelativeLayout>
+        </LinearLayout>
         <TextView
             android:id="@+id/movie_brief"
             android:layout_margin="10dp"

@@ -1,7 +1,5 @@
 package com.example.l0s01in.moviesyou.Models;
 
-
-
 public class Movie {
 
     private String vote_count;
