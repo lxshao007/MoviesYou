@@ -1,21 +1,50 @@
 package com.example.l0s01in.moviesyou.Models;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity(tableName = "Movie")
 public class Movie {
 
-    private String vote_count;
-    private String id;
-    private boolean video;
-    private String vote_average;
+    @ColumnInfo(name = "id")
+    @PrimaryKey
+    @NonNull private String id;
+
+    @ColumnInfo(name = "isFavorited")
+    boolean isFavorited;
+
+    @ColumnInfo(name = "posterPath")
+    String poster_path;
+
+    @ColumnInfo(name = "title")
     private String title;
+
+    @ColumnInfo(name = "voteAverage")
+    private String vote_average;
+
+    @ColumnInfo(name = "releaseDate")
+    private String release_date;
+
+    @ColumnInfo(name = "overview")
+    private String overview;
+
+    private String vote_count;
+    private boolean video;
     private String popularity;
-    private String poster_path;
     private String original_language;
     private String original_title;
-    private int[] genre_ids;
     private String backdrop_path;
     private boolean adult;
-    private String overview;
-    private String release_date;
+
+    public boolean isFavorited() {
+        return isFavorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        isFavorited = favorited;
+    }
 
     public void setVote_count(String vote_count) {
         this.vote_count = vote_count;
@@ -83,14 +112,6 @@ public class Movie {
 
     public void setOriginal_title(String original_title) {
         this.original_title = original_title;
-    }
-
-    public int[] getGenre_ids() {
-        return genre_ids;
-    }
-
-    public void setGenre_ids(int[] genre_ids) {
-        this.genre_ids = genre_ids;
     }
 
     public String getBackdrop_path() {

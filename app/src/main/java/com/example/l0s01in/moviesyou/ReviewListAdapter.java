@@ -36,13 +36,12 @@ public class ReviewListAdapter extends ArrayAdapter<Review> {
         reviewName.setText( "Review" + " " +Integer.toString(position + 1) );
 
         LinearLayout reviewButton = (LinearLayout) convertView.findViewById(R.id.trailer_button);
-        reviewButton.setOnTouchListener(new View.OnTouchListener() {
+        reviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public void onClick(View view) {
                 Intent intent = new Intent(getContext(), ReviewActivity.class);
                 intent.putExtra("review", review.getContent());
                 getContext().startActivity(intent);
-                return false;
             }
         });
         return convertView;

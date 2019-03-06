@@ -1,7 +1,9 @@
 package com.example.l0s01in.moviesyou;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
@@ -29,17 +32,18 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.movie_length) TextView mMovieLength;
     @BindView(R.id.movie_rate) TextView mMovieRate;
     @BindView(R.id.movie_brief) TextView mMovieBrief;
+    @BindView(R.id.favorite_button) ImageView mFavoriteButton;
 
     private MovieViewModel movieViewModel;
     private Movie movie;
     private MovieDatabase mDB;
+    private boolean isFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-
         Movie movie = ModelUtils.toObject(getIntent().getStringExtra("movies"), new TypeToken<Movie>(){});
         setupUI(movie);
 
@@ -51,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
             Toast.makeText(this, "some thing went wrong here", Toast.LENGTH_LONG);
             return;
         }
+        setTitle(movie.getTitle());
         mMovieTitle.setText(movie.getTitle());
         Picasso.with(getApplicationContext())
                 .load(movie.getImgUrl())
@@ -72,6 +77,31 @@ public class DetailActivity extends AppCompatActivity {
             ListView reviewListView = findViewById(R.id.review_list);
             reviewListView.setAdapter(reviewListAdapter);
             setListViewHeightBasedOnChildren(reviewListView);
+        });
+
+        movieViewModel.getFavoriteMoviebyId(movie).observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie movie) {
+                if (movie != null) {
+                    isFavorite = true;
+                    mFavoriteButton.setImageResource(R.drawable.ic_favorite_red_400_24dp);
+                } else {
+                    isFavorite = false;
+                    mFavoriteButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                }
+
+            }
+        });
+
+        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isFavorite) {
+                    movieViewModel.deleteFavorite(movie);
+                } else {
+                    movieViewModel.addFavorite(movie);
+                }
+            }
         });
     }
 

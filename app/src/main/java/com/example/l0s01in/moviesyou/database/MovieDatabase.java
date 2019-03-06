@@ -6,7 +6,9 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.util.Log;
 
-@Database(entities = {FavoriteMovie.class}, version = 1, exportSchema = false)
+import com.example.l0s01in.moviesyou.Models.Movie;
+
+@Database(entities = {Movie.class}, version = 1, exportSchema = false)
 public abstract class MovieDatabase extends RoomDatabase {
 
     private static final String LOG_TAG = MovieDatabase.class.getSimpleName();

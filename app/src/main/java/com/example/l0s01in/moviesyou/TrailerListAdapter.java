@@ -36,12 +36,11 @@ public class TrailerListAdapter extends ArrayAdapter<Trailer> {
         trailerName.setText( "Trailer" + " " +Integer.toString(position + 1) );
 
         LinearLayout trailerButton = (LinearLayout) convertView.findViewById(R.id.trailer_button);
-        trailerButton.setOnTouchListener(new View.OnTouchListener() {
+        trailerButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public void onClick(View view) {
                 Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + trailer.getKey()));
                 getContext().startActivity(webIntent);
-                return false;
             }
         });
         return convertView;
