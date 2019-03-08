@@ -2,6 +2,7 @@ package com.example.l0s01in.moviesyou;
 
 import android.arch.lifecycle.ViewModelProviders;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,10 +24,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
     private static final String FAVORITE = "favorite";
+    private static final String SAVED_ITEM_PREFERENCE = "SAVED_ITEM_PREFERENCE";
+    private static final String SAVED_ITEM = "savedItem";
 
-    private String renderPage;
     private ImageListAdapter mAdapter;
-    private String itemSaved;
 
     MovieViewModel movieViewModel;
 
@@ -35,12 +36,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        renderPage = POPULAR;
-        if (savedInstanceState != null) {
-            renderPage = savedInstanceState.getString("itemSaved") ;
-        }
+        SharedPreferences prefs = getSharedPreferences(SAVED_ITEM_PREFERENCE, MODE_PRIVATE);
+        String savedItem = prefs.getString(SAVED_ITEM, "");
+
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        switch (renderPage) {
+        switch (savedItem) {
             case POPULAR:
                 renderPopular();
                 break;
@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -70,32 +68,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemClicked = item.getItemId();
+        SharedPreferences.Editor editor = getSharedPreferences(SAVED_ITEM_PREFERENCE, MODE_PRIVATE).edit();
         switch(itemClicked) {
             case R.id.action_popular:
                 Toast.makeText(this, "switch to popular", Toast.LENGTH_SHORT).show();
                 renderPopular();
-                itemSaved = POPULAR;
+                editor.putString(SAVED_ITEM, POPULAR);
+                editor.apply();
                 return true;
             case R.id.action_top_rated:
                 Toast.makeText(this, "switch to top rated", Toast.LENGTH_SHORT).show();
                 renderTopRate();
-                itemSaved = TOP_RATED;
+                editor.putString(SAVED_ITEM, TOP_RATED);
+                editor.apply();
                 return true;
             case R.id.action_favorite:
                 Toast.makeText(this, "switch to favorite", Toast.LENGTH_SHORT).show();
                 renderFavorite();
-                itemSaved = FAVORITE;
+                editor.putString(SAVED_ITEM, FAVORITE);
+                editor.apply();
                 return true;
             default:
 
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("itemSaved", itemSaved);
     }
 
     private void renderPopular() {
